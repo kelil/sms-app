@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -129,6 +130,7 @@ public class AuthController {
     }
 
     @PatchMapping("/update/{id}")
+    @PreAuthorize("isAuthenticated() && hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> updateUser(@RequestBody String password, @PathVariable(value = "id") Integer id) {
         User user = userRepository.findById(id).get();
         user.setPassword(encoder.encode(password));
@@ -156,6 +158,19 @@ public class AuthController {
         Authentication  authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), password));
         return authentication.isAuthenticated();
 
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("isAuthenticated() && hasRole('ROLE_ADMIN')")
+    public List<User> getUsers(){
+        return userRepository.findAll();
+    }
+
+    @DeleteMapping("/users/user/{id}")
+    @PreAuthorize("isAuthenticated() && hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") Integer id){
+        userRepository.deleteById(id);
+        return ResponseEntity.ok().body(new MessageResponse("User Deleted SuccessFully"));
     }
 
 }

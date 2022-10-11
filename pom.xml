@@ -86,11 +86,11 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.khalil</groupId>
 			<artifactId>sms_app</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 	<build>
 		<plugins>

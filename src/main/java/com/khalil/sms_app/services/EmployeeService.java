@@ -26,10 +26,24 @@ public class EmployeeService {
     public ResponseEntity<?> addEmployee(Employee employee) {
 
         employeeRepository.save(employee);
+        employeeRepository.saveAndFlush(null);
         return ResponseEntity.ok().body(new MessageResponse("Employee added Successfully!"));
+    }
+
+    public ResponseEntity<?> updateEmployee(Employee employee) {
+        employeeRepository.saveAndFlush(employee);
+        return ResponseEntity.ok().body(new MessageResponse("Employee Updated Successfully!"));
     }
 
     public List<Employee> getAllEmployeeByDivision(Division division) {
         return employeeRepository.findAllEmoloyeeByDivision(division);
+    }
+
+    public Employee getEmployeeById(Integer id) {
+        return employeeRepository.findById(id).get();
+    }
+
+    public void deleteById(Integer id) {
+        employeeRepository.deleteById(id);
     }
 }

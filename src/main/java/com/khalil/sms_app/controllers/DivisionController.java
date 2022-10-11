@@ -2,10 +2,12 @@ package com.khalil.sms_app.controllers;
 
 import com.khalil.sms_app.models.Division;
 import com.khalil.sms_app.models.DivisionDTO;
+import com.khalil.sms_app.payload.response.MessageResponse;
 import com.khalil.sms_app.repositories.DivisionRepository;
 import com.khalil.sms_app.services.DivisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,8 +49,16 @@ public class DivisionController {
 
 
     @PostMapping("/division")
+    @PreAuthorize("isAuthenticated() && hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> addDivision(@RequestBody Division division){
         return divisionService.addDivision(division);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated() && hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteDivision(@PathVariable(value = "id") Integer id){
+      divisionRepository.deleteById(id);
+      return ResponseEntity.ok().body(new MessageResponse("Deleted SuccessFully"));
     }
 
     private Function<Division, DivisionDTO> mapToDivisionDTO = d -> DivisionDTO.builder().id(d.getId()).name(d.getName()).parent(d.getParent()).children(d.getChildren()).build();
